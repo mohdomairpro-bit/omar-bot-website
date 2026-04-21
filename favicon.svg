@@ -1,0 +1,24 @@
+<svg width="680" height="680" viewBox="0 0 680 680" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="340" cy="340" r="300" fill="#0a0018" stroke="#3a0070" stroke-width="1.5"/>
+  <circle cx="340" cy="340" r="280" fill="none" stroke="#2a0050" stroke-width="0.5"/>
+  <g transform="translate(340,340)">
+    <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5"/>
+    <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(60)"/>
+    <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(120)"/>
+    <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(180)"/>
+    <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(240)"/>
+    <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(300)"/>
+  </g>
+  <polygon points="340,100 554,220 554,460 340,580 126,460 126,220" fill="none" stroke="#2a0050" stroke-width="0.8"/>
+  <line x1="340" y1="60" x2="340" y2="620" stroke="#1a0035" stroke-width="0.5"/>
+  <line x1="60" y1="340" x2="620" y2="340" stroke="#1a0035" stroke-width="0.5"/>
+  <circle cx="340" cy="340" r="180" fill="#0d0022" stroke="#4b0082" stroke-width="1"/>
+  <polygon points="340,162 354,176 340,190 326,176" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+  <polygon points="340,490 354,504 340,518 326,504" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+  <polygon points="162,340 176,354 190,340 176,326" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+  <polygon points="490,340 504,354 518,340 504,326" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+  <text x="340" y="308" text-anchor="middle" font-family="serif" font-size="72" fill="#c678ff">.exec</text>
+  <text x="340" y="400" text-anchor="middle" font-family="serif" font-size="90" fill="#9b30ff">VØID</text>
+  <line x1="140" y1="318" x2="220" y2="318" stroke="#4b0082" stroke-width="0.8"/>
+  <line x1="460" y1="318" x2="540" y2="318" stroke="#4b0082" stroke-width="0.8"/>
+</svg>
