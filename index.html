@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>.execVØID — Discord Bot</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --void: #000000;
+      --deep: #05000f;
+      --abyss: #0d0020;
+      --purple: #4b0082;
+      --violet: #6b00b8;
+      --glow: #9b30ff;
+      --bright: #c678ff;
+      --text: #e0c8ff;
+      --muted: #7a5a99;
+      --border: #2a0050;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* Scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Noise texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 998;
+      opacity: 0.4;
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 3rem;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 1.6rem;
+      color: var(--bright);
+      text-shadow: 0 0 20px var(--glow);
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--bright); }
+
+    /* ---- HERO ---- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 50%, rgba(75,0,130,0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 30% 30% at 20% 80%, rgba(107,0,184,0.1) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 30% at 80% 20%, rgba(107,0,184,0.08) 0%, transparent 60%);
+    }
+
+    /* Grid lines */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(75,0,130,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(75,0,130,0.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-logo {
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.1s forwards;
+    }
+    .hero-logo svg {
+      animation: spin 30s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .hero-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      color: var(--glow);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-tag::before { content: '> '; }
+
+    .exec-part {
+      color: #c678ff;
+      font-size: 0.7em;
+      display: block;
+      text-shadow: 0 0 20px rgba(155,48,255,0.6);
+      letter-spacing: 8px;
+    }
+    .void-part {
+      color: #ffffff;
+      font-size: 1em;
+      display: block;
+      text-shadow:
+        0 0 30px rgba(255,255,255,0.4),
+        0 0 60px rgba(155,48,255,0.6),
+        0 0 100px rgba(155,48,255,0.3);
+      letter-spacing: 12px;
+    }
+    .exec-part {
+      font-family: 'UnifrakturMaguntia', cursive;
+      color: #c678ff;
+      display: block;
+      text-shadow: 0 0 30px rgba(155,48,255,0.6);
+      letter-spacing: 6px;
+    }
+    .void-part {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      color: #ffffff;
+      display: block;
+      font-size: 1.1em;
+      letter-spacing: 16px;
+      text-shadow:
+        0 0 30px rgba(255,255,255,0.3),
+        0 0 60px rgba(155,48,255,0.5);
+    }
+    .hero-title {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: clamp(4rem, 10vw, 9rem);
+      line-height: 1;
+      color: var(--bright);
+      text-shadow:
+        0 0 40px rgba(155,48,255,0.8),
+        0 0 80px rgba(155,48,255,0.4),
+        0 0 120px rgba(155,48,255,0.2);
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .hero-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.7rem, 2vw, 1rem);
+      color: var(--muted);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .hero-desc {
+      max-width: 560px;
+      font-size: 1.1rem;
+      color: var(--text);
+      line-height: 1.7;
+      opacity: 0.8;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1s forwards;
+    }
+
+    .btn-primary {
+      padding: 0.9rem 2.5rem;
+      background: var(--purple);
+      color: var(--bright);
+      text-decoration: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1px solid var(--glow);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(155,48,255,0.3);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(155,48,255,0.2));
+      transform: translateX(-100%);
+      transition: transform 0.4s;
+    }
+
+    .btn-primary:hover::before { transform: translateX(0); }
+    .btn-primary:hover {
+      box-shadow: 0 0 40px rgba(155,48,255,0.6);
+      border-color: var(--bright);
+    }
+
+    .btn-secondary {
+      padding: 0.9rem 2.5rem;
+      background: transparent;
+      color: var(--muted);
+      text-decoration: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
+    /* ---- STATUS ---- */
+    .section {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 5px;
+      color: var(--glow);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-label::before { content: '// '; }
+
+    .section-title {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--bright);
+      margin-bottom: 3rem;
+      text-shadow: 0 0 20px rgba(155,48,255,0.4);
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 6rem 0;
+    }
+
+    /* Status cards */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .status-card {
+      background: rgba(13,0,32,0.8);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .status-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .status-card.green::before { background: #00ff88; }
+    .status-card.red::before { background: #ff3355; }
+    .status-card.blue::before { background: #3399ff; }
+
+    .status-card:hover { border-color: var(--muted); }
+
+    .status-channel {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+
+    .status-channel::before { content: '# '; }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+      position: relative;
+    }
+
+    .status-dot.green { background: #00ff88; box-shadow: 0 0 8px #00ff88; animation: pulse-green 2s infinite; }
+    .status-dot.red { background: #ff3355; box-shadow: 0 0 8px #ff3355; }
+    .status-dot.blue { background: #3399ff; box-shadow: 0 0 8px #3399ff; animation: pulse-blue 2s infinite; }
+
+    .status-label {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .status-label.green { color: #00ff88; }
+    .status-label.red { color: #ff3355; }
+    .status-label.blue { color: #3399ff; }
+
+    /* ---- FEATURES ---- */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: rgba(13,0,32,0.6);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 60px; height: 60px;
+      background: radial-gradient(circle, rgba(155,48,255,0.15), transparent 70%);
+    }
+
+    .feature-card:hover {
+      border-color: var(--purple);
+      box-shadow: 0 0 30px rgba(75,0,130,0.3);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--bright);
+      margin-bottom: 0.6rem;
+      letter-spacing: 1px;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ---- COMMANDS ---- */
+    .commands-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .cmd-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      background: rgba(13,0,32,0.6);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      transition: all 0.2s;
+    }
+
+    .cmd-row:hover {
+      border-left-color: var(--glow);
+      background: rgba(75,0,130,0.1);
+    }
+
+    .cmd-name {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--bright);
+      white-space: nowrap;
+      min-width: 280px;
+    }
+
+    .cmd-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ---- ADD BOT ---- */
+    .add-section {
+      text-align: center;
+      padding: 8rem 2rem;
+      position: relative;
+    }
+
+    .add-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(75,0,130,0.2), transparent 70%);
+    }
+
+    .add-box {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      border: 1px solid var(--border);
+      padding: 4rem 3rem;
+      background: rgba(5,0,15,0.9);
+    }
+
+    .add-box::before, .add-box::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border-color: var(--glow);
+      border-style: solid;
+    }
+
+    .add-box::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+
+    .add-box::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .add-title {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 3rem;
+      color: var(--bright);
+      text-shadow: 0 0 30px rgba(155,48,255,0.6);
+      margin-bottom: 1rem;
+    }
+
+    .add-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+
+    .footer-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+
+    /* ---- ANIMATIONS ---- */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 8px #00ff88; }
+      50% { box-shadow: 0 0 16px #00ff88; }
+    }
+
+    @keyframes pulse-blue {
+      0%, 100% { box-shadow: 0 0 8px #3399ff; }
+      50% { box-shadow: 0 0 16px #3399ff; }
+    }
+
+    /* glitch effect on title hover */
+    .hero-title:hover {
+      animation: glitch 0.3s ease;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 0 0 40px rgba(155,48,255,0.8), 0 0 80px rgba(155,48,255,0.4); }
+      20% { text-shadow: -3px 0 #ff0066, 3px 0 #00ffff, 0 0 40px rgba(155,48,255,0.8); transform: skewX(-2deg); }
+      40% { text-shadow: 3px 0 #ff0066, -3px 0 #00ffff, 0 0 40px rgba(155,48,255,0.8); transform: skewX(2deg); }
+      60% { text-shadow: -2px 0 #ff0066, 2px 0 #00ffff; transform: skewX(-1deg); }
+      80% { text-shadow: 0 0 40px rgba(155,48,255,0.8), 0 0 80px rgba(155,48,255,0.4); transform: skewX(0); }
+      100% { text-shadow: 0 0 40px rgba(155,48,255,0.8), 0 0 80px rgba(155,48,255,0.4); }
+    }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">.execVØID</div>
+    <ul class="nav-links">
+      <li><a href="#status">Status</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#commands">Commands</a></li>
+      <li><a href="#add">Add Bot</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+      <div class="hero-logo">
+      <svg width="140" height="140" viewBox="0 0 680 680" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 20px rgba(155,48,255,0.5));">
+        <circle cx="340" cy="340" r="300" fill="#0a0018" stroke="#3a0070" stroke-width="1.5"/>
+        <circle cx="340" cy="340" r="280" fill="none" stroke="#2a0050" stroke-width="0.5"/>
+        <g transform="translate(340,340)">
+          <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5"/>
+          <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(60)"/>
+          <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(120)"/>
+          <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(180)"/>
+          <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(240)"/>
+          <line x1="0" y1="-298" x2="0" y2="-280" stroke="#6b00b8" stroke-width="1.5" transform="rotate(300)"/>
+        </g>
+        <polygon points="340,100 554,220 554,460 340,580 126,460 126,220" fill="none" stroke="#2a0050" stroke-width="0.8"/>
+        <line x1="340" y1="60" x2="340" y2="620" stroke="#1a0035" stroke-width="0.5"/>
+        <line x1="60" y1="340" x2="620" y2="340" stroke="#1a0035" stroke-width="0.5"/>
+        <circle cx="340" cy="340" r="180" fill="#0d0022" stroke="#4b0082" stroke-width="1"/>
+        <polygon points="340,162 354,176 340,190 326,176" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+        <polygon points="340,490 354,504 340,518 326,504" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+        <polygon points="162,340 176,354 190,340 176,326" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+        <polygon points="490,340 504,354 518,340 504,326" fill="#4b0082" stroke="#9b30ff" stroke-width="0.5"/>
+        <text x="340" y="308" text-anchor="middle" font-family="UnifrakturMaguntia,cursive" font-size="72" fill="#c678ff">.exec</text>
+        <text x="340" y="400" text-anchor="middle" font-family="UnifrakturMaguntia,cursive" font-size="90" fill="#9b30ff">VØID</text>
+        <line x1="140" y1="318" x2="220" y2="318" stroke="#4b0082" stroke-width="0.8"/>
+        <line x1="460" y1="318" x2="540" y2="318" stroke="#4b0082" stroke-width="0.8"/>
+      </svg>
+    </div>
+    <p class="hero-tag">System Online — Channel Management Protocol Active</p>
+    <h1 class="hero-title"><span class="exec-part">.exec</span><span class="void-part">VØID</span></h1>
+    <p class="hero-sub">Discord Channel Security Bot</p>
+    <p class="hero-desc">Automated channel locking, real-time emoji status updates, whitelist management — built for server security.</p>
+    <div class="hero-buttons">
+      <a href="https://discord.com/oauth2/authorize?client_id=1495782087574159471&permissions=67760&integration_type=0&scope=bot" class="btn-primary">+ Add to Server</a>
+      <a href="#commands" class="btn-secondary">View Commands</a>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <div class="section" id="status">
+    <div class="reveal">
+      <p class="section-label">Live Status</p>
+      <h2 class="section-title">Channel Monitor</h2>
+      <div class="status-grid">
+        <div class="status-card green">
+          <div class="status-channel">tirex-bibass</div>
+          <span class="status-dot green"></span>
+          <span class="status-label green">Working</span>
+        </div>
+        <div class="status-card green">
+          <div class="status-channel">vortix-bipass</div>
+          <span class="status-dot green"></span>
+          <span class="status-label green">Working</span>
+        </div>
+        <div class="status-card blue">
+          <div class="status-channel">difzz-bipass</div>
+          <span class="status-dot blue"></span>
+          <span class="status-label blue">In Dev</span>
+        </div>
+        <div class="status-card green">
+          <div class="status-channel">userscripts</div>
+          <span class="status-dot green"></span>
+          <span class="status-label green">Working</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURES -->
+  <div class="section" id="features">
+    <div class="reveal">
+      <p class="section-label">What it does</p>
+      <h2 class="section-title">Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-title">Auto Emoji Swap</div>
+          <div class="feature-desc">Automatically flips channel emojis from 🟢 to 🔴 when locked by any bot — Raid Protect, Dyno, Carl, or .execVØID itself.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-title">Built-in Lock System</div>
+          <div class="feature-desc">Lock and unlock channels natively with reason support. Sends a styled alert directly in the locked channel.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <div class="feature-title">Whitelist Management</div>
+          <div class="feature-desc">Channel whitelist lets roles/users chat even when locked. Access whitelist grants command permissions without server roles.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-title">Audit Log Detection</div>
+          <div class="feature-desc">Uses Discord's audit log to reliably detect lock/unlock events from any source, with duplicate protection.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">Works With Any Bot</div>
+          <div class="feature-desc">Compatible with Raid Protect, Dyno, Carl-bot, MEE6 and more. If it changes channel permissions, .execVØID sees it.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <div class="feature-title">Styled Responses</div>
+          <div class="feature-desc">Dark purple embeds with animated emoji, reason support, developer pings, and a clean footer on every response.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- COMMANDS -->
+  <div class="section" id="commands">
+    <div class="reveal">
+      <p class="section-label">How to use</p>
+      <h2 class="section-title">Commands</h2>
+      <div class="commands-list">
+        <div class="cmd-row">
+          <span class="cmd-name">.exec serverinfo</span>
+          <span class="cmd-desc">Shows bot latency, API latency, server name, creator and purpose</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec lock [#channel] [reason]</span>
+          <span class="cmd-desc">Locks a channel with a reason. Sends a styled alert and pings @TiRex Developer</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec unlock [#channel] [reason]</span>
+          <span class="cmd-desc">Unlocks a channel and sends an unlock confirmation message</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec whitelist channel @role/@user</span>
+          <span class="cmd-desc">Adds a role or user to the channel whitelist — they can chat even when locked</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec channel whitelist</span>
+          <span class="cmd-desc">Lists all roles and users in the channel whitelist</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec unwhitelist channel @role/@user</span>
+          <span class="cmd-desc">Removes a role or user from the channel whitelist</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec whitelist access @role/@user</span>
+          <span class="cmd-desc">Grants a role or user access to bot commands without needing Manage Channels</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec whitelist access member</span>
+          <span class="cmd-desc">Lists all roles and users in the access whitelist</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec unwhitelist access @role/@user</span>
+          <span class="cmd-desc">Removes a role or user from the access whitelist</span>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-name">.exec help</span>
+          <span class="cmd-desc">Displays all available commands in a formatted embed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ADD BOT -->
+  <section class="add-section" id="add">
+    <div class="add-box reveal">
+      <div class="add-title">Add Bot</div>
+      <p class="add-desc">Deploy .execVØID to your server in seconds. Requires Manage Channels and View Audit Log permissions.</p>
+      <a href="https://discord.com/oauth2/authorize?client_id=1495782087574159471&permissions=67760&integration_type=0&scope=bot" class="btn-primary">+ Authorize .execVØID</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">.execVØID</div>
+    <div class="footer-text">Made by Omair ❤️ • Powered by Heaven Cloud</div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
+
+    // Typing cursor effect on hero tag
+    const tag = document.querySelector('.hero-tag');
+    const text = tag.textContent;
+    tag.textContent = '';
+    let i = 0;
+    setTimeout(() => {
+      const type = () => {
+        if (i < text.length) {
+          tag.textContent += text[i++];
+          setTimeout(type, 40);
+        }
+      };
+      type();
+    }, 400);
+  </script>
+</body>
+</html>
