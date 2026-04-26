@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>.execVØID — Commands</title>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="stylesheet" href="shared.css"/>
+  <style>
+    .cmd-header { padding: 4rem 2rem 2rem; text-align: center; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(75,0,130,0.15), transparent); }
+    .cmd-tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.4); }
+    .cmd-tab { padding: 0.8rem 1.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; margin-bottom: -1px; }
+    .cmd-tab:hover { color: var(--text); background: rgba(75,0,130,0.06); }
+    .cmd-tab.active { color: var(--bright); border-bottom-color: var(--glow); background: rgba(75,0,130,0.1); }
+    .cmd-panel { display: none; }
+    .cmd-panel.active { display: block; }
+    .cmd-list { max-width: 1100px; margin: 0 auto; }
+    .cmd-row { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: 1rem 2rem; border-bottom: 1px solid rgba(42,0,80,0.35); transition: background 0.15s; }
+    .cmd-row:hover { background: rgba(75,0,130,0.06); }
+    .cmd-row:last-child { border-bottom: none; }
+    .cmd-name { font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--bright); flex-shrink: 0; }
+    .cmd-desc { font-size: 0.86rem; color: var(--muted); text-align: right; }
+    .cmd-badge { padding: 0.15rem 0.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; letter-spacing: 1px; border: 1px solid var(--glow); color: var(--glow); text-transform: uppercase; margin-left: 0.5rem; vertical-align: middle; }
+    .search-bar { max-width: 500px; margin: 1.5rem auto; display: block; width: 100%; padding: 0.7rem 1rem; background: rgba(42,0,80,0.3); border: 1px solid var(--border); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; letter-spacing: 1px; outline: none; }
+    .search-bar:focus { border-color: var(--glow); }
+    .search-bar::placeholder { color: var(--muted); }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">.execVØID</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="commands.html" class="active">Commands</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="status.html">Status</a></li>
+    <li><a href="https://discord.gg/WuA95wAYx8" target="_blank">Support</a></li>
+    <li><a href="dashboard.html" class="nav-login" id="nav-login-btn">
+      <svg class="d-logo" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Dashboard
+    </a></li>
+    <li id="nav-user"><img id="nav-avatar" src="" alt=""/><span id="nav-username"></span></li>
+    <li><a href="https://discord.com/oauth2/authorize?client_id=1495782087574159471&permissions=8&integration_type=0&scope=bot" class="nav-add btn">+ Add Bot</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <div class="cmd-header">
+    <p style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;letter-spacing:4px;color:var(--glow);text-transform:uppercase;margin-bottom:0.5rem;">Reference</p>
+    <h1 style="font-family:'Cinzel',serif;font-size:2.5rem;color:var(--text);margin-bottom:0.5rem;">Commands</h1>
+    <p style="color:var(--muted);font-size:0.9rem;">All commands available as prefix <code style="color:var(--bright);font-family:'Share Tech Mono',monospace">.exec</code> and slash <code style="color:var(--bright);font-family:'Share Tech Mono',monospace">/</code> commands.</p>
+    <input type="text" class="search-bar" id="search" placeholder="Search commands..."/>
+  </div>
+
+  <div class="cmd-tabs">
+    <button class="cmd-tab active" data-tab="all">All</button>
+    <button class="cmd-tab" data-tab="moderation">Moderation</button>
+    <button class="cmd-tab" data-tab="music">Music</button>
+    <button class="cmd-tab" data-tab="tickets">Tickets</button>
+    <button class="cmd-tab" data-tab="fun">Fun & Games</button>
+    <button class="cmd-tab" data-tab="config">Config</button>
+    <button class="cmd-tab" data-tab="info">Info</button>
+    <button class="cmd-tab" data-tab="owner">Owner</button>
+  </div>
+
+  <div id="cmd-container">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">.execVØID</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="commands.html">Commands</a><a href="dashboard.html">Dashboard</a><a href="status.html">Status</a><a href="https://discord.gg/WuA95wAYx8" target="_blank">Support</a>
+  </div>
+  <div class="footer-text">Made with ❤️ by Omair · Powered by Heaven Cloud</div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+const COMMANDS = [
+  // MODERATION
+  {name:".exec ban [@user] [reason]", desc:"Permanently ban — DMs user before banning, checks bot perms", cat:"moderation"},
+  {name:".exec kick [@user] [reason]", desc:"Kick a user — DMs them the reason", cat:"moderation"},
+  {name:".exec timeout [@user] [mins] [reason]", desc:"Mute a user for a set duration", cat:"moderation"},
+  {name:".exec warn [@user] [reason]", desc:"Warn a user — saved to their history", cat:"moderation"},
+  {name:".exec warns [@user]", desc:"Show all warns with timestamps", cat:"moderation"},
+  {name:".exec clearwarns [@user]", desc:"Clear all warns for a user", cat:"moderation"},
+  {name:".exec purge [amount]", desc:"Bulk delete 1–100 messages", cat:"moderation"},
+  {name:".exec lock [#ch] [reason]", desc:"Lock a channel", cat:"moderation"},
+  {name:".exec unlock [#ch] [reason]", desc:"Unlock a channel", cat:"moderation"},
+  {name:".exec view [#ch] [disable/enable] [@role]", desc:"Hide or show a channel from a role", cat:"moderation"},
+  {name:".exec slowmode [#ch] [seconds]", desc:"Set slowmode (0 = off)", cat:"moderation"},
+  {name:".exec unban [userId]", desc:"Unban a user by ID", cat:"moderation"},
+  {name:".exec userbans", desc:"List all bans — paginated with buttons", cat:"moderation"},
+  {name:".exec modhis [@user]", desc:"Full mod history for a user", cat:"moderation"},
+  {name:".exec actionlog [@user] [action] [reason]", desc:"Manually log a mod action to bot-logs", cat:"moderation"},
+  // MUSIC
+  {name:".exec play [url or song name]", desc:"Play YouTube — paste URL or search by name", cat:"music"},
+  {name:".exec skip", desc:"Skip the current song", cat:"music"},
+  {name:".exec pause / resume", desc:"Pause or resume playback", cat:"music"},
+  {name:".exec stop", desc:"Stop music and leave voice channel", cat:"music"},
+  {name:".exec queue", desc:"Show the current music queue", cat:"music"},
+  {name:".exec musicbot add [#vc]", desc:"Move bot to a specific voice channel", cat:"music"},
+  {name:"GUI Buttons", desc:"Skip, Pause, Resume, Stop, Queue on every Now Playing embed", cat:"music"},
+  // TICKETS
+  {name:".exec setupticket", desc:"Interactive 3-step ticket setup wizard", cat:"tickets"},
+  {name:".exec ticket close", desc:"Close ticket — saves transcript to bot-logs", cat:"tickets"},
+  {name:".exec ticket add/remove [@user]", desc:"Add or remove a user from the ticket", cat:"tickets"},
+  {name:".exec ticket claim", desc:"Claim this ticket as your own", cat:"tickets"},
+  {name:".exec ticket rename [name]", desc:"Rename the ticket channel", cat:"tickets"},
+  {name:".exec ticket transcript", desc:"Post ticket transcript in chat", cat:"tickets"},
+  // FUN
+  {name:".exec ttt [@user]", desc:"Tic-Tac-Toe — clickable GUI board", cat:"fun"},
+  {name:".exec trivia", desc:"Multiple choice trivia, 20s timer, button answers", cat:"fun"},
+  {name:".exec meme", desc:"Random meme from Reddit", cat:"fun"},
+  {name:".exec quote", desc:"Inspirational quote", cat:"fun"},
+  {name:".exec roast [@user]", desc:"Roast someone with a random line", cat:"fun"},
+  {name:".exec fakenitro", desc:"Send a fake Nitro gift (joke)", cat:"fun"},
+  {name:".exec random [cat/dog/fox/meme]", desc:"Random image from chosen category", cat:"fun"},
+  {name:".exec afk [reason]", desc:"Set AFK — auto-notifies anyone who pings you", cat:"fun"},
+  {name:".exec giveaway [duration] [prize]", desc:"Start timed giveaway with reaction entry", cat:"fun"},
+  {name:".exec reroll", desc:"Reroll last giveaway for a new winner", cat:"fun"},
+  {name:".exec poll [question] | [opt1] | [opt2]", desc:"Create a native Discord poll", cat:"fun"},
+  {name:".exec announce [message] [#channel]", desc:"Send styled announcement embed", cat:"fun"},
+  // CONFIG
+  {name:".exec setup", desc:"Setup dashboard with progress tracking", cat:"config"},
+  {name:".exec setupticket", desc:"Interactive ticket system wizard", cat:"config"},
+  {name:".exec botlogs set [#channel]", desc:"Set mod action logs channel", cat:"config"},
+  {name:".exec botstatus [#channel]", desc:"Set online/offline announcements channel", cat:"config"},
+  {name:".exec botupdates [#channel]", desc:"Set changelog post channel", cat:"config"},
+  {name:".exec watch add/remove/list [#ch]", desc:"Manage emoji swap watched channels", cat:"config"},
+  {name:".exec verify setrole [@unverified] [@member]", desc:"Configure verification roles", cat:"config"},
+  {name:".exec verify / unverify [@user]", desc:"Verify or unverify a user", cat:"config"},
+  {name:".exec promotionrole set [@r1] [@r2]...", desc:"Set ordered staff ranks (any role names)", cat:"config"},
+  {name:".exec promotionchannel [#channel]", desc:"Set promotion announcements channel", cat:"config"},
+  {name:".exec access [@role/@user] [LV1/LV2/LV3]", desc:"Grant permission tier to role or user", cat:"config"},
+  {name:".exec wl channel/access add/remove/list", desc:"Manage channel and access whitelists", cat:"config"},
+  {name:".exec GlobalLogs disable/enable", desc:"Toggle all bot logging globally", cat:"config"},
+  {name:".exec say [message]", desc:"Post a message as the bot", cat:"config"},
+  // INFO
+  {name:".exec", desc:"Bot overview card", cat:"info"},
+  {name:".exec help", desc:"Paginated command list — 3 pages with navigation buttons", cat:"info"},
+  {name:".exec ping", desc:"Bot and API latency", cat:"info"},
+  {name:".exec serverinfo", desc:"Server stats — members, boosts, channels", cat:"info"},
+  {name:".exec userinfo [@user]", desc:"Full user profile", cat:"info"},
+  {name:".exec botworks", desc:"Bot monitoring status and recent activity", cat:"info"},
+  {name:".exec info [command]", desc:"Usage info for any specific command", cat:"info"},
+  // OWNER
+  {name:".exec console [lines]", desc:"View live console logs via DM", cat:"owner"},
+  {name:".exec botrestart", desc:"Restart the bot (Heaven Cloud auto-restarts)", cat:"owner"},
+  {name:".exec botshutdown", desc:"Shut down the bot and send offline message", cat:"owner"},
+];
+
+let currentTab = 'all';
+
+function renderCommands(filter = '') {
+  const container = document.getElementById('cmd-container');
+  const filtered = COMMANDS.filter(c =>
+    (currentTab === 'all' || c.cat === currentTab) &&
+    (!filter || c.name.toLowerCase().includes(filter) || c.desc.toLowerCase().includes(filter))
+  );
+
+  if (!filtered.length) {
+    container.innerHTML = `<div style="padding:3rem;text-align:center;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:0.8rem;">No commands found.</div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="cmd-list">${filtered.map(c => `
+    <div class="cmd-row">
+      <span class="cmd-name">${c.name}</span>
+      <span class="cmd-desc">${c.desc}</span>
+    </div>`).join('')}</div>`;
+}
+
+document.querySelectorAll('.cmd-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.cmd-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentTab = tab.dataset.tab;
+    renderCommands(document.getElementById('search').value.toLowerCase());
+  });
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  renderCommands(e.target.value.toLowerCase());
+});
+
+renderCommands();
+</script>
+</body>
+</html>

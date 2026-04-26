@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>.execVØID — Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="stylesheet" href="shared.css"/>
+  <style>
+    .status-header { padding: 4rem 2rem 2rem; text-align: center; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(75,0,130,0.12), transparent); }
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; margin-bottom: 3rem; }
+    .status-card { padding: 1.4rem; border: 1px solid var(--border); background: var(--card); }
+    .status-ch { font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--text); margin-bottom: 0.6rem; }
+    .status-indicator { display: flex; align-items: center; gap: 0.4rem; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot.green { background: #00b894; box-shadow: 0 0 7px #00b894; animation: pulse 2s ease infinite; }
+    .dot.blue { background: #74b9ff; box-shadow: 0 0 7px #74b9ff; }
+    .dot.red { background: #e74c3c; box-shadow: 0 0 7px #e74c3c; }
+    .s-lbl { font-size: 0.78rem; }
+    .s-lbl.green { color: #00b894; }
+    .s-lbl.blue { color: #74b9ff; }
+    .s-lbl.red { color: #e74c3c; }
+    .overall-status { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1.5rem; border: 1px solid var(--border); background: var(--card); margin-bottom: 2rem; }
+    .overall-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); animation: pulse 2s ease infinite; }
+    .overall-label { font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--green); }
+    .overall-sub { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 2px; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .stat-card { padding: 1.2rem; border: 1px solid var(--border); background: var(--card); text-align: center; }
+    .stat-card .num { font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; color: var(--bright); text-shadow: 0 0 14px var(--glow); }
+    .stat-card .lbl { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">.execVØID</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="commands.html">Commands</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="status.html" class="active">Status</a></li>
+    <li><a href="https://discord.gg/WuA95wAYx8" target="_blank">Support</a></li>
+    <li id="nav-user"><img id="nav-avatar" src="" alt=""/><span id="nav-username"></span></li>
+    <li><a href="https://discord.com/oauth2/authorize?client_id=1495782087574159471&permissions=8&integration_type=0&scope=bot" class="nav-add btn">+ Add Bot</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <div class="status-header">
+    <p style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;letter-spacing:4px;color:var(--glow);text-transform:uppercase;margin-bottom:0.5rem;">Live</p>
+    <h1 style="font-family:'Cinzel',serif;font-size:2.5rem;color:var(--text);margin-bottom:0.5rem;">System Status</h1>
+    <p style="color:var(--muted);font-size:0.88rem;">Heaven Cloud · Miami · Real-time monitoring</p>
+  </div>
+
+  <div class="section">
+    <div class="overall-status reveal">
+      <div class="overall-dot"></div>
+      <div>
+        <div class="overall-label">All Systems Operational</div>
+        <div class="overall-sub">Last checked: <span id="last-check">just now</span></div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p class="section-label">Bot Services</p>
+      <h2 class="section-title" style="margin-bottom:1.5rem;">Core Systems</h2>
+      <div class="status-grid">
+        <div class="status-card"><div class="status-ch">Bot Core</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Online</span></div></div>
+        <div class="status-card"><div class="status-ch">Music System</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">yt-dlp Active</span></div></div>
+        <div class="status-card"><div class="status-ch">Ticket System</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Operational</span></div></div>
+        <div class="status-card"><div class="status-ch">Moderation</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Active</span></div></div>
+        <div class="status-card"><div class="status-ch">Giveaways</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Active</span></div></div>
+        <div class="status-card"><div class="status-ch">Slash Commands</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Registered (50+)</span></div></div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:2rem;">
+      <p class="section-label">Watched Channels</p>
+      <h2 class="section-title" style="margin-bottom:1.5rem;">Emoji Swap Monitor</h2>
+      <div class="status-grid">
+        <div class="status-card"><div class="status-ch">tirex-bibass</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Watching</span></div></div>
+        <div class="status-card"><div class="status-ch">vortix-bipass</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Watching</span></div></div>
+        <div class="status-card"><div class="status-ch">difzz-bipass</div><div class="status-indicator"><div class="dot blue"></div><span class="s-lbl blue">In Dev</span></div></div>
+        <div class="status-card"><div class="status-ch">userscripts</div><div class="status-indicator"><div class="dot green"></div><span class="s-lbl green">Watching</span></div></div>
+      </div>
+    </div>
+
+    <div class="stats-row reveal" style="margin-top:3rem;">
+      <div class="stat-card"><div class="num">Miami</div><div class="lbl">Server Location</div></div>
+      <div class="stat-card"><div class="num" id="stat-count">—</div><div class="lbl">Total Authorizations</div></div>
+      <div class="stat-card"><div class="num">50+</div><div class="lbl">Commands</div></div>
+      <div class="stat-card"><div class="num">24/7</div><div class="lbl">Uptime</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">.execVØID</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="commands.html">Commands</a><a href="dashboard.html">Dashboard</a><a href="https://discord.gg/WuA95wAYx8" target="_blank">Support</a>
+  </div>
+  <div class="footer-text">Made with ❤️ by Omair · Powered by Heaven Cloud</div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+  // Last checked timer
+  let secs = 0;
+  setInterval(() => {
+    secs++;
+    const el = document.getElementById('last-check');
+    if (secs < 60) el.textContent = secs + 's ago';
+    else el.textContent = Math.floor(secs/60) + 'm ago';
+  }, 1000);
+
+  // Auth count
+  peekAuthCount().then(n => {
+    document.getElementById('stat-count').textContent = n.toLocaleString();
+  });
+</script>
+</body>
+</html>
